@@ -1,21 +1,65 @@
 import os
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SMS.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "school_dj.settings")
 django.setup()
 
-from ScheduleManager.models import *
+from ScheduleManager.models import Subject, Student, Teacher, Class, Grade, Schedule
 
-def create_subject():
-    subject = Subject(name=name)
-    subject.save
+def create_subject(name):
+    subject = Subject(
+        name = name
+    )
+    subject.save()
     return subject
 
-def create_teacher():
-    teacher = Teacher(name=name, second_name=second_name)
+def create_teacher(name, second_name):
+    teacher = Teacher(
+        name = name,
+        second_name = second_name
+    )
     teacher.save()
     return teacher
 
+def create_student(name):
+    student = Student(
+        name = name
+    )
+    student.save()
+    return student
+
+def create_class(name):
+    classe = Class(
+        name = name
+    )
+    classe.save()
+    return classe
+
+def add_teacher_subject(teacher_id, subject_id):
+    teacher = Teacher.objects.get(id=teacher_id)
+    subject = Subject.objects.get(id=subject_id)
+    subject.teacher.add(teacher)
+    subject.save()
+
+
+def add_subject_schedule(date, teacher_id, subject_id, clas_id):
+    schedule = Schedule(
+        date=date,
+        teacher=Teacher.objects.get(id=teacher_id),
+        subject= Subject.objects.get(id=subject_id),
+        clas=Class.objects.get(id=clas_id)
+    )
+    schedule.save()
+
+def add_grade_student(student_id, schedule_id, grade):
+    grade2 = Grade(
+        student=Student.objects.get(id=student_id),
+        schedule=Schedule.objects.get(id=schedule_id),
+        grade = grade
+    )
+    grade2.save()
+    
+    
 while True:
     print("Choose an action:\n1 - Create Subject\n2 - Create Teacher\n3 - Create Student\n4 - Create Class\n5 - Link Teacher to Subject\n6 - Show all teachers\n7 - Show all subjects\n8 - Create schedule\n9 - Add grade to student\n0 - Exit\n")
     choise = int(input("Your choice: "))
@@ -32,7 +76,6 @@ while True:
             print('The teacher is successfully created!')
         case 3:
             name = input("Enter name of stundent:\n")
-
             create_student(name)
             print("The student created successfully!")
         case 4:
